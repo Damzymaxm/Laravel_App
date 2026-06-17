@@ -37,3 +37,19 @@ Route::post('/submit-contact', function (Request $request) {
         'messageContent' => $messageContent
     ]);
 });
+// This handles your private admin dashboard page
+Route::get('/admin/submissions', function () {
+    // 1. Fetch all rows from the contact_submissions table
+    $allMessages = DB::table('contact_submissions')->get();
+
+    // 2. Pass those messages into a view file named 'admin'
+    return view('admin', ['submissions' => $allMessages]);
+});
+// This handles deleting a specific submission by its ID
+Route::post('/admin/submissions/{id}/delete', function ($id) {
+    // Tell the database to find the row with this exact ID and delete it
+    DB::table('contact_submissions')->where('id', $id)->delete();
+
+    // Send the user right back to the dashboard page to see the updated list
+    return redirect('/admin/submissions');
+});
